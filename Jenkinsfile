@@ -56,30 +56,15 @@ node('docker_ce') {
                 stage('Install') {
                     sh 'npm ci --no-audit'
                 }
-                stage('Lint') {
-                    if (scriptTargetExists(packageJson, 'lint:ci')) {
-                        sh 'npm run lint:ci'
-                    } else if (scriptTargetExists(packageJson, 'lint')) {
-                        sh 'npm run lint'
-                    }
-                }
+
                 stage('Build') {
-                    if (scriptTargetExists(packageJson, 'build-node')) {
-                        sh 'npm run build-node'
-                    } else if (scriptTargetExists(packageJson, 'build')) {
-                        sh 'npm run build'
-                    }
-                    if (isPublishBranch) {
+                    sh 'npm run build'
+                                  if (isPublishBranch) {
                         archiveArtifacts artifacts: 'public/messages/*.json', allowEmptyArchive: true
                     }
                 }
                 
-                    stage('Unit Tests') {
-                        if (scriptTargetExists(packageJson, 'test-unit:xml')) {
-                            sh 'npm run test-unit:xml'
-                        }
-                    }
-
+    
 
                 
                 if (isPublishBranch) {
